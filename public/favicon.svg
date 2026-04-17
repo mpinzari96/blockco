@@ -1,0 +1,23 @@
+<svg width="32" height="32" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F5FF"/>
+      <stop offset="100%" stop-color="#00C8D4"/>
+    </linearGradient>
+    <linearGradient id="tD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C8D4"/>
+      <stop offset="100%" stop-color="#008A94"/>
+    </linearGradient>
+    <linearGradient id="tS" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00A8B8"/>
+      <stop offset="100%" stop-color="#006875"/>
+    </linearGradient>
+  </defs>
+  <rect width="56" height="56" rx="10" fill="#020818"/>
+  <polygon points="28,18 42,11 42,26 28,33" fill="url(#tG)" opacity="0.9"/>
+  <polygon points="14,26 28,18 28,33 14,41" fill="url(#tS)"/>
+  <polygon points="28,33 42,26 42,41 28,48" fill="url(#tD)"/>
+  <polygon points="14,11 24,6 24,17 14,22" fill="url(#tG)" opacity="0.7"/>
+  <polygon points="4,17 14,11 14,22 4,27" fill="url(#tS)" opacity="0.6"/>
+  <polygon points="14,22 24,17 24,28 14,33" fill="url(#tD)" opacity="0.6"/>
+</svg>
