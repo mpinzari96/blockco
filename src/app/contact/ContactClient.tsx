@@ -17,6 +17,9 @@ const services = [
 
 const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM']
 
+/** Netlify Forms + Next runtime: POST must target the static form file in /public. */
+const NETLIFY_FORMS_POST_PATH = '/__forms.html'
+
 export default function ContactClient() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', business: '', service: '', message: '', time: '',
@@ -36,7 +39,7 @@ export default function ContactClient() {
       const params = new URLSearchParams()
       data.forEach((v, k) => params.append(k, v as string))
 
-      const res = await fetch(`${window.location.origin}/contact`, {
+      const res = await fetch(`${window.location.origin}${NETLIFY_FORMS_POST_PATH}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString(),
@@ -150,8 +153,6 @@ export default function ContactClient() {
                 <form
                   name="contact"
                   method="POST"
-                  data-netlify="true"
-                  data-netlify-honeypot="bot-field"
                   onSubmit={handleSubmit}
                   className="glass rounded-2xl p-8 md:p-10 border-glow"
                 >

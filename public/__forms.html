@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Netlify Forms — contact</title>
+  </head>
+  <body>
+    <!-- Deploy-time form registration for Netlify + @netlify/plugin-nextjs v5.
+         Submissions are POSTed here from the contact page. -->
+    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input name="name" type="text" />
+      <input name="email" type="email" />
+      <input name="phone" type="tel" />
+      <input name="business" type="text" />
+      <input name="service" type="text" />
+      <input name="message" type="text" />
+      <input name="time" type="text" />
+      <input name="bot-field" type="text" />
+    </form>
+  </body>
+</html>
