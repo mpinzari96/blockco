@@ -97,9 +97,9 @@ export default function Footer() {
                 <span>Sacramento, CA 95814<br />Serving all of Northern CA</span>
               </li>
               <li>
-                <a href="tel:+19165550199" className="flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors">
+                <a href="tel:+19162663570" className="flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors">
                   <Phone size={15} className="text-teal-glow shrink-0" />
-                  (916) 555-0199
+                  (916) 266-3570
                 </a>
               </li>
               <li>

@@ -3,6 +3,14 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { Mail, Phone, MapPin, MessageCircle, CheckCircle, Zap, Clock, ArrowRight } from 'lucide-react'
 
+const PHONE_DISPLAY = '(916) 266-3570'
+const PHONE_TEL = '+19162663570'
+const WHATSAPP_URL = 'https://wa.me/19162663570'
+const SACRAMENTO_OSM_EMBED =
+  'https://www.openstreetmap.org/export/embed.html?bbox=-121.65%2C38.45%2C-121.35%2C38.72&layer=mapmarker=38.5816%2C-121.4944'
+const SACRAMENTO_MAP_LINK =
+  'https://www.openstreetmap.org/search?query=Sacramento%2C%20CA%2095814'
+
 const services = [
   'Web Design', 'SEO Optimization', 'Local SEO', 'E-commerce', 'Site Maintenance', 'Free SEO Audit',
 ]
@@ -15,15 +23,38 @@ export default function ContactClient() {
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const update = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1500))
-    setLoading(false)
-    setSubmitted(true)
+    setError(null)
+    try {
+      const data = new FormData(e.currentTarget)
+      const params = new URLSearchParams()
+      data.forEach((v, k) => params.append(k, v as string))
+
+      const res = await fetch(`${window.location.origin}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
+      })
+      if (!res.ok) {
+        if (res.status === 405) {
+          setError('Form delivery runs on Netlify. Deploy the site or test on your live URL, or email hello@blockco.us.')
+        } else {
+          throw new Error('Submit failed')
+        }
+        return
+      }
+      setSubmitted(true)
+    } catch {
+      setError('Something went wrong. Please email hello@blockco.us or call us.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -60,12 +91,14 @@ export default function ContactClient() {
             >
               {/* Info cards */}
               {[
-                { icon: Phone, label: 'Phone', val: '(916) 555-0199', href: 'tel:+19165550199', color: '#00F5FF' },
+                { icon: Phone, label: 'Phone', val: PHONE_DISPLAY, href: `tel:${PHONE_TEL}`, color: '#00F5FF' },
                 { icon: Mail, label: 'Email', val: 'hello@blockco.us', href: 'mailto:hello@blockco.us', color: '#7B2FFF' },
-                { icon: MapPin, label: 'Location', val: 'Sacramento, CA 95814', href: '#', color: '#00F5FF' },
-                { icon: MessageCircle, label: 'WhatsApp', val: 'Chat on WhatsApp', href: 'https://wa.me/19165550199', color: '#7B2FFF' },
+                { icon: MapPin, label: 'Location', val: 'Sacramento, CA 95814', href: SACRAMENTO_MAP_LINK, color: '#00F5FF' },
+                { icon: MessageCircle, label: 'WhatsApp', val: 'Chat on WhatsApp', href: WHATSAPP_URL, color: '#7B2FFF' },
               ].map(({ icon: Icon, label, val, href, color }) => (
                 <a key={label} href={href}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="glass rounded-xl p-5 flex items-center gap-4 group hover:scale-[1.02] transition-transform duration-200 block">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
@@ -89,17 +122,16 @@ export default function ContactClient() {
                 </p>
               </div>
 
-              {/* Sacramento map placeholder */}
+              {/* Sacramento area map */}
               <div className="glass rounded-xl overflow-hidden">
-                <div className="h-40 relative"
-                  style={{ background: 'linear-gradient(135deg, rgba(0,245,255,0.06), rgba(123,47,255,0.06))' }}>
-                  <div className="absolute inset-0 grid-lines opacity-40" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                    <MapPin size={28} className="text-teal-glow" style={{ filter: 'drop-shadow(0 0 10px rgba(0,245,255,0.8))' }} />
-                    <span className="text-xs text-white/60 tracking-wider"
-                      style={{ fontFamily: 'var(--font-mono)' }}>Sacramento, CA</span>
-                    <span className="text-xs text-white/30">38.5816° N, 121.4944° W</span>
-                  </div>
+                <div className="h-44 relative bg-[#0a1628]">
+                  <iframe
+                    title="Map of Sacramento area"
+                    className="absolute inset-0 h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={SACRAMENTO_OSM_EMBED}
+                  />
                 </div>
                 <div className="p-4">
                   <p className="text-xs text-white/40 text-center">Serving all of Sacramento & Northern California</p>
@@ -115,7 +147,23 @@ export default function ContactClient() {
               className="lg:col-span-2"
             >
               {!submitted ? (
-                <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 md:p-10 border-glow">
+                <form
+                  name="contact"
+                  method="POST"
+                  data-netlify="true"
+                  data-netlify-honeypot="bot-field"
+                  onSubmit={handleSubmit}
+                  className="glass rounded-2xl p-8 md:p-10 border-glow"
+                >
+                  <input type="hidden" name="form-name" value="contact" />
+                  <p className="hidden" aria-hidden="true">
+                    <label>
+                      Do not fill this out: <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                    </label>
+                  </p>
+                  <input type="hidden" name="service" value={form.service} />
+                  <input type="hidden" name="time" value={form.time} />
+
                   <h2 className="text-xl font-black text-white mb-2"
                     style={{ fontFamily: 'var(--font-display)' }}>
                     Book Your Free Strategy Call
@@ -126,12 +174,13 @@ export default function ContactClient() {
                     {[
                       { key: 'name', label: 'Full Name', placeholder: 'John Smith', type: 'text' },
                       { key: 'email', label: 'Email Address', placeholder: 'john@business.com', type: 'email' },
-                      { key: 'phone', label: 'Phone Number', placeholder: '(916) 555-0100', type: 'tel' },
+                      { key: 'phone', label: 'Phone Number', placeholder: '(916) 266-3570', type: 'tel' },
                       { key: 'business', label: 'Business Name', placeholder: 'Your Business LLC', type: 'text' },
                     ].map(({ key, label, placeholder, type }) => (
                       <div key={key}>
                         <label className="block text-xs text-white/50 mb-1.5 tracking-wide">{label}</label>
                         <input
+                          name={key}
                           type={type}
                           value={form[key as keyof typeof form]}
                           onChange={e => update(key, e.target.value)}
@@ -193,6 +242,7 @@ export default function ContactClient() {
                   <div className="mb-8">
                     <label className="block text-xs text-white/50 mb-1.5 tracking-wide">Tell Us About Your Business</label>
                     <textarea
+                      name="message"
                       value={form.message}
                       onChange={e => update('message', e.target.value)}
                       placeholder="What does your business do? What's your biggest challenge online right now?"
@@ -201,6 +251,10 @@ export default function ContactClient() {
                       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(0,245,255,0.12)', fontFamily: 'var(--font-body)' }}
                     />
                   </div>
+
+                  {error ? (
+                    <p className="text-sm text-red-400 mb-4" role="alert">{error}</p>
+                  ) : null}
 
                   <button type="submit" disabled={loading} className="btn-primary w-full justify-center text-sm">
                     {loading ? (

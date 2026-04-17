@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ContactClient from './ContactClient'
+import NetlifyContactFormProbe from './NetlifyContactFormProbe'
 
 export const metadata: Metadata = {
   title: 'Contact Blockco | Free SEO Audit Sacramento Web Design Agency',
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <ContactClient />
+  return (
+    <>
+      <NetlifyContactFormProbe />
+      <ContactClient />
+    </>
+  )
 }

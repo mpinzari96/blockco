@@ -41,7 +41,7 @@ const jsonLd = {
       name: 'Blockco',
       description: 'Premium web design and SEO agency in Sacramento, California',
       url: 'https://blockco.us',
-      telephone: '+1-916-555-0199',
+      telephone: '+19162663570',
       email: 'hello@blockco.us',
       address: {
         '@type': 'PostalAddress',
